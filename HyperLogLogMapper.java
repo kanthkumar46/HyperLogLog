@@ -1,4 +1,5 @@
 import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,11 +13,18 @@ public class HyperLogLogMapper extends Mapper<TextId, String, Integer, IntVbl>{
 	private Pattern pattern;
 	private Matcher matcher;
 	private IntVbl leadingZeroCount = new IntVbl.Max();
+	MessageDigest msgDigest = null;
 	
 	@Override
 	public void start(String[] args, Combiner<Integer, IntVbl> combiner) {
 		pattern = Pattern.compile(args[0]);
+		try {
+			msgDigest = (MessageDigest) HyperLogLogUtil.MSG_DIGEST.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
 	}
+	
 	
 	@Override
 	public void map(TextId textId, String line, 
@@ -25,11 +33,11 @@ public class HyperLogLogMapper extends Mapper<TextId, String, Integer, IntVbl>{
 		byte[] digest;
 		
 		matcher = pattern.matcher(line);
-		if(matcher.find()){
+		while(matcher.find()){
 			String ipaadress = matcher.group();
 			
-			HyperLogLogUtil.MSG_DIGEST.update(ipaadress.getBytes());
-			digest = HyperLogLogUtil.MSG_DIGEST.digest();
+			msgDigest.update(ipaadress.getBytes());
+			digest = msgDigest.digest();
 			String binaryDigest = new BigInteger(1, digest).toString(2);
 			
 			registerIdx = HyperLogLogUtil.getRegisterIndex(binaryDigest);

@@ -15,13 +15,14 @@ public class HyperLogLogUtil {
 		}
 	}
 	
-	public static void MaptoRegister(String ipaadress) {
+	public static void MaptoRegister(String ipaadress, MessageDigest msgDigest) 
+			throws CloneNotSupportedException {
 		int curRegisterVal;
 		int registerIdx, leadingZeroCount;
 		byte[] digest;
 		
-		MSG_DIGEST.update(ipaadress.getBytes());
-		digest = MSG_DIGEST.digest();
+		msgDigest.update(ipaadress.getBytes());
+		digest = msgDigest.digest();
 		String binaryDigest = new BigInteger(1, digest).toString(2);
 		
 		registerIdx = getRegisterIndex(binaryDigest);

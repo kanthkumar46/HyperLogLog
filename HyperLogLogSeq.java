@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.security.MessageDigest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,12 +26,13 @@ public class HyperLogLogSeq extends Task{
 		
 		try(BufferedReader reader = 
 				new BufferedReader(new FileReader(file))){
+			MessageDigest msgDigest = (MessageDigest) HyperLogLogUtil.MSG_DIGEST.clone();
 			String line;
 			while((line = reader.readLine()) != null){
 				Matcher matcher = pattern.matcher(line);
-				if(matcher.find()){
+				while(matcher.find()){
 					String ipaadress = matcher.group();
-					HyperLogLogUtil.MaptoRegister(ipaadress);
+					HyperLogLogUtil.MaptoRegister(ipaadress, msgDigest);
 				}
 			}
 		}
