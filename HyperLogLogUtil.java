@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 public class HyperLogLogUtil {
 	static MessageDigest MSG_DIGEST;
 	static Pattern pattern = Pattern.compile("10*$");
+	
 	static{
 		try {
 			MSG_DIGEST = MessageDigest.getInstance("MD5");
@@ -43,6 +44,8 @@ public class HyperLogLogUtil {
 		return registerIdx;
 	}
 	
+	
+	
 	public static int getRegisterValue(String binaryHash){
 		int leadingZeroCount = 1;
 		int length = binaryHash.length();
@@ -72,10 +75,25 @@ public class HyperLogLogUtil {
 		
 		return constant;
 	}
+	
+	public static double cardinalityRatio(double estimateA, double estimateB){
+		return Math.max(estimateA, estimateB)/ Math.min(estimateA, estimateB);
+	}
+	
+	public static double overlap(double intersection, double estimateA, double estimateB){
+		return intersection/ Math.min(estimateA, estimateB);
+	}
+	
+	public static double absoluteError(double estimate, double trueValue) {
+		return Math.abs(trueValue - estimate )/ trueValue; 
+	}
+	
+	
 
 	public static double computeIndicator() {
 		double indicator;
 		double harmonicMean = 0.0;
+		
 		for(Integer registerVal : HyperLogLog.registers){
 			harmonicMean += 1/Math.pow(2, registerVal);
 		}
