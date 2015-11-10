@@ -3,20 +3,19 @@ import java.security.MessageDigest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import edu.rit.pj2.vbl.IntVbl;
 import edu.rit.pjmr.Combiner;
 import edu.rit.pjmr.Mapper;
 import edu.rit.pjmr.TextId;
 
-public class HyperLogLogMapper extends Mapper<TextId, String, Integer, IntVbl>{
+public class HyperLogLogMapper extends Mapper<TextId, String, Integer, HyperLogLogVbl>{
 
 	private Pattern pattern;
 	private Matcher matcher;
-	private IntVbl leadingZeroCount = new IntVbl.Max();
+	private HyperLogLogVbl registerVbl = new HyperLogLogVbl();
 	MessageDigest msgDigest = null;
 	
 	@Override
-	public void start(String[] args, Combiner<Integer, IntVbl> combiner) {
+	public void start(String[] args, Combiner<Integer, HyperLogLogVbl> combiner) {
 		pattern = Pattern.compile(args[0]);
 		try {
 			msgDigest = (MessageDigest) HyperLogLogUtil.MSG_DIGEST.clone();
@@ -28,7 +27,7 @@ public class HyperLogLogMapper extends Mapper<TextId, String, Integer, IntVbl>{
 	
 	@Override
 	public void map(TextId textId, String line, 
-			Combiner<Integer, IntVbl> combiner) {
+			Combiner<Integer, HyperLogLogVbl> combiner) {
 		int registerIdx;
 		byte[] digest;
 		
@@ -41,9 +40,10 @@ public class HyperLogLogMapper extends Mapper<TextId, String, Integer, IntVbl>{
 			String binaryDigest = new BigInteger(1, digest).toString(2);
 			
 			registerIdx = HyperLogLogUtil.getRegisterIndex(binaryDigest);
-			leadingZeroCount.item = HyperLogLogUtil.getRegisterValue(binaryDigest);
+			registerVbl.leadingZero = HyperLogLogUtil.getRegisterValue(binaryDigest);
+			registerVbl.words.add(ipaadress);
 
-			combiner.add(registerIdx, leadingZeroCount);
+			combiner.add(registerIdx, registerVbl);
 		}
 	}
 	

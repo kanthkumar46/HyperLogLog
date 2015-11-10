@@ -1,9 +1,8 @@
-import edu.rit.pj2.vbl.IntVbl;
 import edu.rit.pjmr.PjmrJob;
 import edu.rit.pjmr.TextFileSource;
 import edu.rit.pjmr.TextId;
 
-public class HyperLogLogSmp extends PjmrJob<TextId, String, Integer, IntVbl>{
+public class HyperLogLogSmp extends PjmrJob<TextId, String, Integer, HyperLogLogVbl>{
 
 	@Override
 	public void main(String[] args) throws Exception {

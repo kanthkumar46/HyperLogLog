@@ -1,15 +1,20 @@
+import java.io.Serializable;
 import java.util.HashSet;
 
 import edu.rit.pj2.Vbl;
 
-public class HyperLogLogVbl implements Vbl {
+public class HyperLogLogVbl implements Vbl, Serializable{
 
-	private int leadingZero;
-	private HashSet<String> words;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public int leadingZero;
+	public HashSet<String> words;
 	
 	
 	public HyperLogLogVbl (){
-		words = new HashSet<>();
+		words = new HashSet<String>();
 	}
 	
 	@Override
@@ -29,9 +34,7 @@ public class HyperLogLogVbl implements Vbl {
 	
 	public void addToHashSet(Vbl vbl){
 		HyperLogLogVbl hyperVbl = (HyperLogLogVbl) vbl;
-		for(String word: hyperVbl.words){
-			this.words.add(word);
-		}
+		this.words.addAll(hyperVbl.words);
 	}
 
 	@Override
