@@ -1,21 +1,21 @@
 public class HyperLogLog {
-	static int registerIdxSize = 10;
-	static int registerCount = 1024;
-	static int[] registers = new int[registerCount];
+	static int registerIdxSize;
+	static int registerCount;
+	static int[] registers;
 	
-	double alpha16, alpha32, alpha64, alphaM;
-	
-	public HyperLogLog() {
-		this.alpha16 = 0.673;
-		this.alpha32 = 0.697;
-		this.alpha64 = 0.709;
-		this.alphaM = 0.7213/(1 + 1.079/registerCount);
+	static final double alpha16, alpha32, alpha64;
+	static double alphaM;
+	static{
+		alpha16 = 0.673;
+		alpha32 = 0.697;
+		alpha64 = 0.709;
 	}
 	
-	public static void initRegister(int IdxSize){
+	public static void init(int IdxSize){
 		registerIdxSize = IdxSize;
 		registerCount = (int) Math.pow(2, IdxSize);
 		registers = new int[registerCount];
+		alphaM = 0.7213/(1 + 1.079/registerCount);
 	}
 	
 	public double getCardinality(double rawEstimate) {

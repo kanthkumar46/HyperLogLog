@@ -14,7 +14,7 @@ public class HyperLogLogSmp extends PjmrJob<TextId, String, Integer, IntVbl>{
 		
 		String file = args[0];
 		String pattern = args[1];
-		HyperLogLog.initRegister(Integer.parseInt(args[2]));
+		HyperLogLog.init(Integer.parseInt(args[2]));
 		
 		String[] nodes = args[0].split (",");
 		int NT = Math.max (threads(), 1);

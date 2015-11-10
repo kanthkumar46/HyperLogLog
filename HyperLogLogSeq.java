@@ -1,5 +1,7 @@
+import java.io.BufferedReader;
 import java.io.File;
-import java.util.Scanner;
+import java.io.FileReader;
+import java.security.MessageDigest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,28 +22,28 @@ public class HyperLogLogSeq extends Task{
 		
 		File file = new File(args[0]);
 		Pattern pattern = Pattern.compile(args[1]);
-		HyperLogLog.initRegister(Integer.parseInt(args[2]));
+		HyperLogLog.init(Integer.parseInt(args[2]));
 		
-
-		Scanner scanner = new Scanner(file);
-		while(scanner.hasNextLine()){
-			String line = scanner.nextLine();
-			Matcher matcher = pattern.matcher(line);
-			while(matcher.find()){
-				String ipaadress = matcher.group();
-				HyperLogLogUtil.MaptoRegister(ipaadress);
+		try(BufferedReader reader = 
+				new BufferedReader(new FileReader(file))){
+			MessageDigest msgDigest = (MessageDigest) HyperLogLogUtil.MSG_DIGEST.clone();
+			String line;
+			while((line = reader.readLine()) != null){
+				Matcher matcher = pattern.matcher(line);
+				while(matcher.find()){
+					String ipaadress = matcher.group();
+					HyperLogLogUtil.MaptoRegister(ipaadress, msgDigest);
+				}
 			}
 		}
 		
-		double alpha = HyperLogLogUtil.computeConstant(hyperLogLog);
+		double alpha = HyperLogLogUtil.computeConstant();
 		double indicator = HyperLogLogUtil.computeIndicator();
-		
 		double rawEstimate = HyperLogLogUtil.computeRawEstimate(alpha, indicator);
-		cardinality = hyperLogLog.getCardinality(rawEstimate);
 		
+		cardinality = hyperLogLog.getCardinality(rawEstimate);
 		System.out.println("HyperLogLog Appromximated Cardinality : "
 						+ (int)Math.floor(cardinality));
-		scanner.close();
 	}
 
 	protected static int coresRequired(){

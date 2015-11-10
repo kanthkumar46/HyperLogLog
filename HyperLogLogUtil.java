@@ -16,13 +16,14 @@ public class HyperLogLogUtil {
 		}
 	}
 	
-	public static void MaptoRegister(String ipaadress) {
+	public static void MaptoRegister(String ipaadress, MessageDigest msgDigest) 
+			throws CloneNotSupportedException {
 		int curRegisterVal;
 		int registerIdx, leadingZeroCount;
 		byte[] digest;
 		
-		MSG_DIGEST.update(ipaadress.getBytes());
-		digest = MSG_DIGEST.digest();
+		msgDigest.update(ipaadress.getBytes());
+		digest = msgDigest.digest();
 		String binaryDigest = new BigInteger(1, digest).toString(2);
 		
 		registerIdx = getRegisterIndex(binaryDigest);
@@ -55,20 +56,20 @@ public class HyperLogLogUtil {
 		return leadingZeroCount;
 	}
 	
-	public static double computeConstant(HyperLogLog hyperLogLog) {
+	public static double computeConstant() {
 		double constant;
 		switch (HyperLogLog.registerCount) {
 		case 16:
-			constant = hyperLogLog.alpha16;
+			constant = HyperLogLog.alpha16;
 			break;
 		case 32:
-			constant = hyperLogLog.alpha32;
+			constant = HyperLogLog.alpha32;
 			break;
 		case 64:
-			constant = hyperLogLog.alpha64;
+			constant = HyperLogLog.alpha64;
 			break;
 		default:
-			constant = hyperLogLog.alphaM;
+			constant = HyperLogLog.alphaM;
 			break;
 		}
 		
