@@ -22,12 +22,12 @@ public class HyperLogLogSeq extends Task{
 		Pattern pattern = Pattern.compile(args[1]);
 		HyperLogLog.initRegister(Integer.parseInt(args[2]));
 		
-		@SuppressWarnings("resource")
+
 		Scanner scanner = new Scanner(file);
 		while(scanner.hasNextLine()){
 			String line = scanner.nextLine();
 			Matcher matcher = pattern.matcher(line);
-			if(matcher.find()){
+			while(matcher.find()){
 				String ipaadress = matcher.group();
 				HyperLogLogUtil.MaptoRegister(ipaadress);
 			}
@@ -41,6 +41,7 @@ public class HyperLogLogSeq extends Task{
 		
 		System.out.println("HyperLogLog Appromximated Cardinality : "
 						+ (int)Math.floor(cardinality));
+		scanner.close();
 	}
 
 	protected static int coresRequired(){
