@@ -1,12 +1,16 @@
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import edu.rit.pj2.Vbl;
 
 public class HyperLogLogVbl implements Vbl {
 
 	private int leadingZero;
-	private ArrayList<String> words;
+	private HashSet<String> words;
 	
+	
+	public HyperLogLogVbl (){
+		words = new HashSet<>();
+	}
 	
 	@Override
 	public void reduce(Vbl vbl) {
