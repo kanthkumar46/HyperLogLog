@@ -52,20 +52,20 @@ public class HyperLogLogUtil {
 		return leadingZeroCount;
 	}
 	
-	public static double computeConstant(HyperLogLog hyperLogLog) {
+	public static double computeConstant() {
 		double constant;
 		switch (HyperLogLog.registerCount) {
 		case 16:
-			constant = hyperLogLog.alpha16;
+			constant = HyperLogLog.alpha16;
 			break;
 		case 32:
-			constant = hyperLogLog.alpha32;
+			constant = HyperLogLog.alpha32;
 			break;
 		case 64:
-			constant = hyperLogLog.alpha64;
+			constant = HyperLogLog.alpha64;
 			break;
 		default:
-			constant = hyperLogLog.alphaM;
+			constant = HyperLogLog.alphaM;
 			break;
 		}
 		

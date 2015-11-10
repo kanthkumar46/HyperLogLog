@@ -34,7 +34,7 @@ public class HyperLogLogMapper extends Mapper<TextId, String, Integer, IntVbl>{
 			
 			registerIdx = HyperLogLogUtil.getRegisterIndex(binaryDigest);
 			leadingZeroCount.item = HyperLogLogUtil.getRegisterValue(binaryDigest);
-			
+
 			combiner.add(registerIdx, leadingZeroCount);
 		}
 	}

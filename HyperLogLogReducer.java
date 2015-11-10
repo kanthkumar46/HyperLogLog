@@ -18,7 +18,7 @@ public class HyperLogLogReducer extends Reducer<Integer, IntVbl>{
 	
 	@Override
 	public void finish() {
-		double alpha = HyperLogLogUtil.computeConstant(hyperLogLog);
+		double alpha = HyperLogLogUtil.computeConstant();
 		double indicator = HyperLogLogUtil.computeIndicator();
 		
 		double rawEstimate = HyperLogLogUtil.computeRawEstimate(alpha, indicator);
