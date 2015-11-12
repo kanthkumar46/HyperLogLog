@@ -3,36 +3,36 @@ import java.util.HashSet;
 
 import edu.rit.pj2.Vbl;
 
-public class HyperLogLogVbl implements Vbl, Serializable{
+public class HyperLogLogVbl implements Vbl, Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	public int leadingZero;
+	public byte leadingZero;
 	public HashSet<String> words;
-	
-	
-	public HyperLogLogVbl (){
+	public int maxIdx;
+
+	public HyperLogLogVbl() {
 		words = new HashSet<String>();
 	}
-	
+
 	@Override
 	public void reduce(Vbl vbl) {
 		HyperLogLogVbl hyperVbl = (HyperLogLogVbl) vbl;
-		if(this.leadingZero < hyperVbl.leadingZero){
-			set(hyperVbl);
+		if (hyperVbl.words.size() == 0) {
+			if (this.leadingZero < hyperVbl.leadingZero) {
+				set(hyperVbl);
+			}
+		}else {
+			addToHashSet(hyperVbl);
 		}
-		addToHashSet(hyperVbl);
 	}
 
 	@Override
 	public void set(Vbl vbl) {
 		HyperLogLogVbl hyperVbl = (HyperLogLogVbl) vbl;
-		this.leadingZero = hyperVbl.leadingZero;	
+		this.leadingZero = hyperVbl.leadingZero;
 	}
-	
-	public void addToHashSet(Vbl vbl){
+
+	public void addToHashSet(Vbl vbl) {
 		HyperLogLogVbl hyperVbl = (HyperLogLogVbl) vbl;
 		this.words.addAll(hyperVbl.words);
 	}
