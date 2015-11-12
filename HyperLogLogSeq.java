@@ -18,12 +18,11 @@ public class HyperLogLogSeq extends Task{
 			printUsage();
 		}
 		
-		HyperLogLog hyperLogLog= new HyperLogLog();
+		//HyperLogLog hyperLogLog= new HyperLogLog();
 		
 		File file = new File(args[0]);
 		Pattern pattern = Pattern.compile(args[1]);
-		HyperLogLog.init(Integer.parseInt(args[2]));
-		
+		//HyperLogLog.init(Integer.parseInt(args[2]));
 		try(BufferedReader reader = 
 				new BufferedReader(new FileReader(file))){
 			MessageDigest msgDigest = (MessageDigest) HyperLogLogUtil.MSG_DIGEST.clone();
@@ -38,10 +37,10 @@ public class HyperLogLogSeq extends Task{
 		}
 		
 		double alpha = HyperLogLogUtil.computeConstant();
-		double indicator = HyperLogLogUtil.computeIndicator();
+		double indicator = HyperLogLogUtil.computeIndicator(HyperLogLog.registers);
 		double rawEstimate = HyperLogLogUtil.computeRawEstimate(alpha, indicator);
 		
-		cardinality = hyperLogLog.getCardinality(rawEstimate);
+		//cardinality = hyperLogLog.getCardinality(rawEstimate, HyperLogLog.registers);
 		System.out.println("HyperLogLog Appromximated Cardinality : "
 						+ (int)Math.floor(cardinality));
 	}

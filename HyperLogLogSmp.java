@@ -2,34 +2,55 @@ import edu.rit.pjmr.PjmrJob;
 import edu.rit.pjmr.TextFileSource;
 import edu.rit.pjmr.TextId;
 
-public class HyperLogLogSmp extends PjmrJob<TextId, String, Integer, HyperLogLogVbl>{
+public class HyperLogLogSmp extends PjmrJob<TextId, String, String, HyperLogLogVbl> {
 
 	@Override
 	public void main(String[] args) throws Exception {
-		if(args.length != 3){
+		if (args.length != 2) {
 			System.err.println("Enter correct number of arguments");
 			printUsage();
 		}
+		String pattern = args[0];
+		HyperLogLog log = new HyperLogLog(Integer.parseInt(args[1]));
+
+		//String[] nodes = args[2].split(",");
+		int NT = Math.max(threads(), 1);
 		
-		String file = args[0];
-		String pattern = args[1];
-		HyperLogLog.init(Integer.parseInt(args[2]));
+		String arr[] = new String[2];
+		arr[0] = pattern;
+		arr[1] = "A";
+		int i = 0;
 		
-		String[] nodes = args[0].split (",");
-		int NT = Math.max (threads(), 1);
+		/*for (String node : nodes) {
+			if (i == 0) {
+				arr[1] = "A";
+				mapperTask(node)
+				.source(new TextFileSource("/var/tmp/kkd6428/Sherlock.txt"))
+				.mapper(NT,HyperLogLogMapper.class, arr);
+			} else {
+				arr[1] = "B";
+				mapperTask(node)
+				.source(new TextFileSource("/var/tmp/kkd6428/Sherlock.txt"))
+				.mapper(NT,HyperLogLogMapper.class, arr);
+			}
+			i++;
+		}*/
 		
-		for(String node : nodes){
-			/*mapperTask(node).
-			source(new TextFileSource("src//accesslog")).
-			mapper(NT, HyperLogLogMapper.class, pattern);*/
-		}
+		mapperTask()
+		.source(new TextFileSource("Sherlock.txt"))
+		.mapper(NT,HyperLogLogMapper.class, arr);
 		
-		mapperTask().
-		source(new TextFileSource(file)).
-		mapper(NT, HyperLogLogMapper.class, pattern);
+		String arr1[] = new String[2];
+		arr1[0] = pattern;
+		arr1[1] = "B";
 		
-		reducerTask().reducer(HyperLogLogReducer.class);
+		mapperTask()
+		.source(new TextFileSource("vocab.kos.txt"))
+		.mapper(NT,HyperLogLogMapper.class, arr1);
 		
+
+		reducerTask().reducer(HyperLogLogReducer.class, args);
+
 		startJob();
 	}
 
